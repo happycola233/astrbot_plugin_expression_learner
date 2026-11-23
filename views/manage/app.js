@@ -117,7 +117,7 @@ function renderOverview() {
     embeddingLine = "嵌入模型：没配，按文字相似度合并、随机挑选。";
   }
   if (!embedding.active && embedding.available.length) {
-    embeddingLine += ` 能用的嵌入模型 ID：${embedding.available.map((id) => `<strong>${escapeHtml(id)}</strong>`).join("、")}，填进插件配置的「嵌入模型 ID」。`;
+    embeddingLine += ` 能用的嵌入模型提供商 ID：${embedding.available.map((id) => `<strong>${escapeHtml(id)}</strong>`).join("、")}，填进插件配置的「嵌入模型提供商 ID」。`;
   }
   const settingsLine = `每次回复带 <strong>${settings.pick_count}</strong> 条 · 每攒 <strong>${settings.batch_size}</strong> 条新消息学一次 · 只用精选：<strong>${
     settings.featured_only ? "是" : "否"

@@ -1,7 +1,7 @@
 name: astrbot_plugin_expression_learner
 display_name: 表达学习
 desc: 从群聊里学群友的说话方式（情境 → 表达），用嵌入模型合并相同的说法；回复时挑几条贴近当前聊天的让机器人借用。带管理页面。
-version: v1.0.0
+version: v1.0.1
 author: happycola233
 repo: https://github.com/happycola233/astrbot_plugin_expression_learner
 views:
