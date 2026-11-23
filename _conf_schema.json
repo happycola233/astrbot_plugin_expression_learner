@@ -1,0 +1,69 @@
+{
+  "learn_groups": {
+    "type": "list",
+    "description": "学习的群",
+    "default": [],
+    "hint": "填群号，每行一个。只从这些群学，群里回复时也只用这个群学到的说法。"
+  },
+  "use_in_private": {
+    "type": "bool",
+    "description": "私聊里也用",
+    "default": true,
+    "hint": "私聊回复时，从所有学习的群里挑说法。私聊的消息本身不拿来学。"
+  },
+  "blacklist": {
+    "type": "list",
+    "description": "学习黑名单",
+    "default": [],
+    "hint": "填 QQ 号，每行一个。这些人发的消息不拿来学，只影响这个插件。"
+  },
+  "learn_provider_id": {
+    "type": "string",
+    "description": "学习用的模型",
+    "default": "",
+    "_special": "select_provider",
+    "hint": "从聊天记录里总结说话方式用的模型。留空就用这个群当前的对话模型。"
+  },
+  "embedding_provider_id": {
+    "type": "string",
+    "description": "嵌入模型 ID",
+    "default": "",
+    "hint": "填「模型提供商」里嵌入模型的 ID（插件的管理页面会列出能用的）。配上后按意思合并相同的说法、按意思挑选；留空就按文字相似度合并、随机挑选。换模型后要在管理页面点「重建向量」。"
+  },
+  "batch_size": {
+    "type": "int",
+    "description": "每攒多少条新消息学一次",
+    "default": 40,
+    "hint": "每次学习调用一次学习用的模型。调小学得更勤，也更费钱。"
+  },
+  "min_interval_minutes": {
+    "type": "int",
+    "description": "两次自动学习至少隔几分钟",
+    "default": 10,
+    "hint": "群里聊得很快时，避免一直在学。"
+  },
+  "pick_count": {
+    "type": "int",
+    "description": "每次回复带几条",
+    "default": 5,
+    "hint": "回复前挑几条贴近当前聊天的说法附在请求末尾。填 0 只学不用。"
+  },
+  "featured_only": {
+    "type": "bool",
+    "description": "只用精选的",
+    "default": false,
+    "hint": "打开后，回复时只从管理页面里标了精选的说法里挑。"
+  },
+  "merge_threshold": {
+    "type": "float",
+    "description": "合并阈值",
+    "default": 0.9,
+    "hint": "配了嵌入模型时，新学到的说法和已有说法的相似度达到这个值就算同一条，次数加一。合并得太多就调高，同一个意思存了好多条就调低。"
+  },
+  "max_per_group": {
+    "type": "int",
+    "description": "每个群最多存几条",
+    "default": 5000,
+    "hint": "超过后删掉学到次数最少、最久没被学到也没被用到的，精选的不删。每次回复只带几条，存得多不会让提示词变长。"
+  }
+}

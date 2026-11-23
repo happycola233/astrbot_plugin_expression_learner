@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>表达学习</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <h1>表达学习</h1>
+        <label class="group-picker">
+          群
+          <select id="group"></select>
+        </label>
+        <button id="refresh" class="ghost" type="button">刷新</button>
+      </header>
+
+      <section class="stats" id="stats"></section>
+
+      <section class="panel" id="status"></section>
+
+      <section class="actions">
+        <button id="learn" type="button">立即学习</button>
+        <button id="rebuild" class="ghost" type="button" hidden>重建向量</button>
+        <button id="clear" class="danger" type="button">清空本群</button>
+      </section>
+
+      <section class="toolbar">
+        <input id="search" type="search" placeholder="搜情境、表达或例句" />
+        <select id="sort">
+          <option value="learned">最近学到</option>
+          <option value="count">学到次数</option>
+          <option value="used">最近带上</option>
+          <option value="created">最先学到</option>
+        </select>
+        <label class="check"><input id="featured" type="checkbox" /> 只看精选</label>
+      </section>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-star" title="精选">精选</th>
+              <th>情境</th>
+              <th>表达</th>
+              <th class="col-example">例句</th>
+              <th class="col-num" title="同一种说法被学到的次数">学到</th>
+              <th class="col-num" title="被挑中附在回复请求里的次数">带上</th>
+              <th class="col-time">最近学到</th>
+              <th class="col-ops">操作</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <p class="empty" id="empty" hidden>还没有学到东西。群里聊够「每攒多少条学一次」的条数后会自动学，也可以点「立即学习」。</p>
+      </div>
+
+      <footer class="pager">
+        <button id="prev" class="ghost" type="button">上一页</button>
+        <span id="page-info"></span>
+        <button id="next" class="ghost" type="button">下一页</button>
+      </footer>
+    </main>
+    <div class="toast" id="toast" hidden></div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
