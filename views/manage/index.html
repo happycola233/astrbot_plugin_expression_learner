@@ -7,63 +7,130 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <main>
-      <header class="top">
-        <h1>表达学习</h1>
-        <label class="group-picker">
-          群
-          <select id="group"></select>
-        </label>
-        <button id="refresh" class="ghost" type="button">刷新</button>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.34 5.66M20 5v6h-6" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></symbol>
+        <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16v4ZM13.5 6.5l4 4" /></symbol>
+        <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" /></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" /></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" /></symbol>
+        <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6" /></symbol>
+        <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6" /></symbol>
+        <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" /></symbol>
+        <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" /></symbol>
+      </defs>
+    </svg>
+
+    <main class="page">
+      <header class="masthead">
+        <div class="title">
+          <h1>表达学习</h1>
+          <p>从群聊里学到的说话方式。回复前挑几条贴近当前聊天的，让机器人自然地借用。</p>
+        </div>
+        <div class="masthead-tools">
+          <label class="group-picker">
+            <span>群</span>
+            <select id="group" aria-label="选择群"></select>
+          </label>
+          <button id="refresh" class="btn icon" type="button" title="刷新" aria-label="刷新">
+            <svg class="ico"><use href="#i-refresh" /></svg>
+          </button>
+        </div>
       </header>
 
-      <section class="stats" id="stats"></section>
+      <section class="stats" id="stats" aria-label="统计"></section>
 
-      <section class="panel" id="status"></section>
-
-      <section class="actions">
-        <button id="learn" type="button">立即学习</button>
-        <button id="rebuild" class="ghost" type="button" hidden>重建向量</button>
-        <button id="clear" class="danger" type="button">清空本群</button>
+      <section class="card status">
+        <div class="status-body">
+          <div class="embedding" id="embedding"></div>
+          <div class="settings" id="settings"></div>
+        </div>
+        <div class="status-actions">
+          <button id="rebuild" class="btn" type="button" hidden>重建向量</button>
+          <button id="learn" class="btn primary" type="button">
+            <svg class="ico"><use href="#i-sparkle" /></svg><span>立即学习</span>
+          </button>
+        </div>
+        <div class="notice" id="notice" hidden>
+          <svg class="ico"><use href="#i-alert" /></svg>
+          <div id="notice-text"></div>
+        </div>
       </section>
 
-      <section class="toolbar">
-        <input id="search" type="search" placeholder="搜情境、表达或例句" />
-        <select id="sort">
-          <option value="learned">最近学到</option>
-          <option value="count">学到次数</option>
-          <option value="used">最近带上</option>
-          <option value="created">最先学到</option>
-        </select>
-        <label class="check"><input id="featured" type="checkbox" /> 只看精选</label>
-      </section>
+      <section class="card list" id="list">
+        <div class="toolbar">
+          <label class="search">
+            <svg class="ico"><use href="#i-search" /></svg>
+            <input id="search" type="search" placeholder="搜情境、表达或例句" aria-label="搜索" />
+          </label>
+          <div class="toolbar-right">
+            <div class="segmented" role="group" aria-label="筛选">
+              <button type="button" data-filter="all" aria-pressed="true">全部</button>
+              <button type="button" data-filter="featured" aria-pressed="false">精选</button>
+            </div>
+            <select id="sort" aria-label="排序">
+              <option value="learned">最近学到</option>
+              <option value="count">学到次数</option>
+              <option value="used">最近带上</option>
+              <option value="created">最近新学</option>
+            </select>
+          </div>
+          <!-- Covers the toolbar while rows are selected, so the table does not shift. -->
+          <div class="selection" id="selection" hidden>
+            <span>已选 <strong id="selected-count">0</strong> 条</span>
+            <button id="select-none" class="btn subtle small" type="button">取消选择</button>
+            <button id="delete-selected" class="btn danger small" type="button">
+              <svg class="ico"><use href="#i-trash" /></svg><span>删除所选</span>
+            </button>
+          </div>
+        </div>
 
-      <div class="table-wrap">
-        <table>
+        <table class="grid">
           <thead>
             <tr>
-              <th class="col-star" title="精选">精选</th>
-              <th>情境</th>
-              <th>表达</th>
-              <th class="col-example">例句</th>
-              <th class="col-num" title="同一种说法被学到的次数">学到</th>
-              <th class="col-num" title="被挑中附在回复请求里的次数">带上</th>
-              <th class="col-time">最近学到</th>
-              <th class="col-ops">操作</th>
+              <th class="c-check"><input id="check-all" type="checkbox" aria-label="全选本页" /></th>
+              <th class="c-star"><span class="sr">精选</span></th>
+              <th class="c-situation">情境</th>
+              <th class="c-style">表达</th>
+              <th class="c-example">例句</th>
+              <th class="c-num" title="同一种说法被学到的次数">学到</th>
+              <th class="c-num" title="被挑中附在回复请求里的次数">带上</th>
+              <th class="c-time" id="time-head">最近学到</th>
+              <th class="c-ops"><span class="sr">操作</span></th>
             </tr>
           </thead>
           <tbody id="rows"></tbody>
         </table>
-        <p class="empty" id="empty" hidden>还没有学到东西。群里聊够「每攒多少条学一次」的条数后会自动学，也可以点「立即学习」。</p>
-      </div>
 
-      <footer class="pager">
-        <button id="prev" class="ghost" type="button">上一页</button>
-        <span id="page-info"></span>
-        <button id="next" class="ghost" type="button">下一页</button>
-      </footer>
+        <div class="empty" id="empty" hidden></div>
+
+        <footer class="list-foot">
+          <button id="clear" class="btn subtle danger-text small" type="button">清空本群</button>
+          <div class="pager" id="pager">
+            <span id="page-info"></span>
+            <button id="prev" class="btn icon small" type="button" title="上一页" aria-label="上一页">
+              <svg class="ico"><use href="#i-chevron-left" /></svg>
+            </button>
+            <button id="next" class="btn icon small" type="button" title="下一页" aria-label="下一页">
+              <svg class="ico"><use href="#i-chevron-right" /></svg>
+            </button>
+          </div>
+        </footer>
+      </section>
     </main>
-    <div class="toast" id="toast" hidden></div>
+
+    <dialog class="dialog" id="dialog" aria-labelledby="dialog-title">
+      <h2 id="dialog-title"></h2>
+      <div class="dialog-body" id="dialog-body"></div>
+      <div class="dialog-actions">
+        <button class="btn" type="button" data-value="cancel">取消</button>
+        <button class="btn danger-solid" type="button" data-value="ok" id="dialog-ok"></button>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <script type="module" src="./app.js"></script>
   </body>
 </html>
